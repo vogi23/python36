@@ -51,6 +51,9 @@ RUN pip install jupyterlab --upgrade
 RUN apt-get install pandoc -y
 RUN apt-get install texlive-xetex -y 
 
+RUN unlink /usr/bin/python
+RUN ln -s /usr/local/bin/python3.7 /usr/bin/python
+
 RUN apt-get install bash -y
 RUN pip install bash_kernel
 RUN python -m bash_kernel.install
