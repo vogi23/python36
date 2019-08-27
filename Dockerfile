@@ -3,8 +3,10 @@ FROM ubuntu:18.04
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN true
 
+RUN apt-get clean
 RUN apt-get update
 RUN apt-get -y upgrade
+
 RUN apt-get install -y \
 	make \
 	build-essential  \
@@ -28,7 +30,8 @@ RUN apt-get install -y \
 	liblzma-dev \
     python3-dev \
     python3-setuptools \
-    wget
+    wget \
+	curl
 
 RUN mkdir /tmp/Python37 \
     && cd /tmp/Python37 \
@@ -42,27 +45,10 @@ RUN ln -s /usr/local/bin/python3.7 /usr/bin/python
 RUN wget https://bootstrap.pypa.io/get-pip.py && python get-pip.py
 
 RUN pip install --upgrade pip
-RUN pip install requests
-RUN apt-get install curl -y
 
 RUN pip install jupyter --upgrade
 RUN pip install jupyterlab --upgrade
 
-RUN apt-get install pandoc -y
-RUN apt-get install texlive-xetex -y 
-
-RUN unlink /usr/bin/python
-RUN ln -s /usr/local/bin/python3.7 /usr/bin/python
-
 RUN apt-get install bash -y
 RUN pip install bash_kernel
 RUN python -m bash_kernel.install
-
-ENV MAIN_PATH=/usr/local/bin/workdir
-ENV LIBS_PATH=${MAIN_PATH}/libs
-ENV CONFIG_PATH=${MAIN_PATH}/config
-ENV NOTEBOOK_PATH=${MAIN_PATH}/notebooks
-
-EXPOSE 8888
-
-CMD cd ${MAIN_PATH} && sh config/run_jupyter.sh
