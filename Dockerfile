@@ -23,32 +23,31 @@ RUN apt-get install -y \
     openssl \
     libncurses5-dev \
 	xz-utils \
-	tk-dev \
 	libxml2-dev \
 	libxmlsec1-dev \
 	libffi-dev \
-	liblzma-dev \
+	liblzma-dev 
+	
+RUN apt-get install -y \	
     python3-dev \
-    python3-setuptools \
-    wget \
-	curl
+	wget
 
-RUN mkdir /tmp/Python37 \
-    && cd /tmp/Python37 \
-    && wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz \
-    && tar xvf Python-3.7.0.tar.xz \
-    && cd /tmp/Python37/Python-3.7.0 \
-    && ./configure \
-    && make altinstall
+RUN ln -s /usr/bin/python3 /usr/local/bin/python
 
-RUN ln -s /usr/local/bin/python3.7 /usr/bin/python
-RUN wget https://bootstrap.pypa.io/get-pip.py && python get-pip.py
+# python3-dev does not come with pip bundled
+# python3-pip only contains v9.x
+# therefore manually install pip3 via get-pip
+RUN wget https://bootstrap.pypa.io/get-pip.py
+RUN python get-pip.py
 
 RUN pip install --upgrade pip
 
-RUN pip install jupyter --upgrade
-RUN pip install jupyterlab --upgrade
+RUN python -m pip install jupyter
+RUN python -m pip install jupyterlab
 
-RUN apt-get install bash -y
-RUN pip install bash_kernel
+RUN python -m pip install bash_kernel
 RUN python -m bash_kernel.install
+
+COPY ./jupyter_notebook_config.py /root/.jupyter/jupyter_notebook_config.py
+
+ENTRYPOINT ["/bin/bash"]
