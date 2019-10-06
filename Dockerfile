@@ -50,6 +50,6 @@ RUN python -m pip install jupyterlab
 RUN python -m pip install bash_kernel
 RUN python -m bash_kernel.install
 
-COPY ./jupyter_notebook_config.py /root/.jupyter/jupyter_notebook_config.py
+COPY jupyter_notebook_config.py /root/.jupyter/jupyter_notebook_config.py
 
 ENTRYPOINT ["/bin/bash"]
